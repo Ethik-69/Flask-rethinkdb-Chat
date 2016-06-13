@@ -1,0 +1,83 @@
+{% extends 'skeleton.index.html' %}
+
+{% block corps %}
+
+<h1>CHAT</h1>
+
+<div id="general_chat">
+
+<div id="div_chat_list">
+    <ul id="chat_list">
+    {% for message in old_message %}
+        <li><div class="pseudo">{{ message.pseudo }}</div> : <div class="message">{{ message.message }}</div></li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div id="div_connected_list">
+    <ul id="connected_list">
+        {% for client in connected %}
+            <li>{{  client.pseudo  }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div id="div-chat_send">
+    <form id="chat_send" method=post>
+        <label for="message">Message</label>
+        <input type="text" name="message" id="message" />
+
+        <input type="submit" id="send" value="Send" />
+    </form>
+</div>
+
+</div>
+
+
+<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.8.1/axios.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+var chatForm = document.getElementById('chat_send');
+var messageInput = document.getElementById('message');
+var chatList = document.getElementById('chat_list');
+var connectedList = document.getElementById('connected_list');
+
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+socket.on('new_change', function(data) {
+  chatList.innerHTML = chatList.innerHTML + '<li><div class="pseudo">' + data.pseudo + '</div> : ' + data.message + '</li>';
+});
+
+socket.on('new_user', function(data) {
+  var request = axios.post('/new_user_list/', {});
+});
+
+socket.on('user_disconnect', function(data) {
+  var request = axios.post('/new_user_list/', {});
+});
+
+socket.on('connected_list', function(data) {
+    connectedList.innerHTML = '<li></li>'
+    data.forEach(function(client) {
+        connectedList.innerHTML = connectedList.innerHTML + '<li>' + client + '</li>';
+     });
+});
+
+chatForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  var request = axios.post('/send_to_db/', {
+    message: messageInput.value
+  });
+  request.then(function(data) {
+    console.log(data);
+  })
+  messageInput.value = "";
+});
+
+window.onbeforeunload = disconnect;
+  function disconnect()
+  {
+  var request = axios.post('/disconnect/', {});
+  }
+</script>
+
+{% endblock %}
