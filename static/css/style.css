@@ -1,79 +1,27 @@
 @charset "UTF-8";
 
 body{
-    background: #9BC4BD;
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
-#index, #signup {
-    width: 280px;
-    margin-left: auto;
-    margin-right: auto;
+a {
+    color: black;
+    text-decoration: none;
 }
 
 li {
     list-style: none;
 }
 
-#general_chat {
-    position: absolute;
-    top: 10%;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
+/* Formulaire + index/signup */
 
-#div_chat_list {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 15%;
-    bottom: 5%;
-}
-
-#div_connected_list {
-    position: absolute;
-    top: 0;
-    left: 85%;
-    right: 0;
-    bottom: 0;
-}
-
-#chat_list {
-    width: 95%;
-    height: 100%;
-    overflow: hidden;
-    overflow-y: scroll;
-}
-
-#div-chat_send {
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right 0;
-}
-
-.message, .pseudo {
-    display: inline-block;
-}
-
-#chat_send > input#message {
-    background-color: #eeeeee;
-    -webkit-border-radius: 3px;
-     	-moz-border-radius: 3px;
-        border-radius: 3px;
-  	border: 1px solid black;
-  	font-size: 1em;
-    width: 75%;
-    display: inline-block;
-}
-
-#chat > label {
-    display: inline-block;
-}
-
-#chat > input#send {
-    display: block;
+#index, #signup {
+    width: 280px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 form input#pseudo,
@@ -87,4 +35,134 @@ form input#conf_password {
   	border: 1px solid black;
   	font-size: 1em;
   	display: block;
+}
+
+/* --------- Chat --------- */
+
+/* ----- Séparation x3 ----- */
+
+#general_container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    flex-flow: row;
+}
+
+#div_chat_list {
+    background: #9BC4BD;
+    height: 97.7%;
+    flex: 76%;
+    order: 2;
+    padding: 10px;
+}
+
+#div_connected_list {
+    background: #919BC4;
+    flex: 12%;
+    order: 3;
+}
+
+#div_channel_list {
+    background: #5F94AD;
+    flex: 12%;
+    order: 1;
+}
+
+/* Chat list */
+
+#channel_title {
+    padding-left: 10px;
+    margin: 0px;
+    background-color: #80AD8E;
+}
+
+#chat_list {
+    height: 90%;
+    margin: 0px;
+    padding: 15px 0px 0px 0px;
+    overflow: auto;
+}
+
+.li_message {
+}
+
+.message {
+    padding-left: 30px;
+}
+
+.pseudo {
+    font-size: 1.05em;
+    font-weight: bold;
+}
+
+.pseudo:hover {
+    text-decoration: underline;
+}
+
+#input_message {
+    width: 97%;
+    padding: 10px;
+    border: solid 2px #b3b3b3;
+    border-radius: 4px;
+}
+
+#send {
+    display: none;
+}
+
+/* Connected users list */
+
+#div_connected_list {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-content: flex-start;
+}
+
+.a_connected_user {
+    width: 100%;
+    height: 3%;
+    flex-basis: auto;
+    text-align: center;
+}
+
+.connected_user {
+    line-height: 1.7em;
+    width: 100%;
+    height: 100%;
+}
+
+.connected_user:hover {
+    background-color: #7D85A8;
+}
+
+/* Channels */
+
+#div_channel_list {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-content: flex-start;
+}
+
+.a_channel {
+    width: 100%;
+    height: 5%;
+    flex-basis: auto;
+    text-align: center;
+}
+
+.channel {
+    line-height: 2.7em;
+    width: 100%;
+    height: 100%;
+}
+
+.channel:hover {
+    background-color: #4D788C;
 }

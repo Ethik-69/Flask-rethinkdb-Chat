@@ -8,6 +8,7 @@ import rethinkdb as rdb
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from threading import Thread
 import json
+import multiprocessing
 
 
 app = Flask(__name__, static_url_path='')
@@ -16,8 +17,7 @@ socketio = SocketIO(app)
 app.config.update(dict(DEBUG=True,
                        RDB_HOST='localhost',
                        RDB_PORT=28015,
-                       DB_NAME='test',
-                       TABLE_NAME='chat'))
+                       DB_NAME='test'))
 
 global thread
 thread = None
@@ -45,18 +45,25 @@ def teardown_request(exception):
         pass
 
 
-def select():
-    return rdb.db(app.config['DB_NAME']).table(app.config['TABLE_NAME']).order_by(index=rdb.asc('number')).limit(20).run(g.rdb_conn)
+def messages_select():
+    return rdb.db(app.config['DB_NAME']).table("chat").order_by(index=rdb.asc('number')).run(g.rdb_conn)
+
+
+def channels_select():
+    return rdb.db(app.config['DB_NAME']).table('Channels').run(g.rdb_conn)
 
 
 def delete():
-    select_all = list(rdb.db(app.config['DB_NAME']).table(app.config['TABLE_NAME']).run(g.rdb_conn))
+    select_all = list(rdb.db(app.config['DB_NAME']).table("chat").run(g.rdb_conn))
     for val in select_all:
-        rdb.db(app.config['DB_NAME']).table(app.config['TABLE_NAME']).get(val['id']).delete().run(g.rdb_conn)
+        rdb.db(app.config['DB_NAME']).table("chat").get(val['id']).delete().run(g.rdb_conn)
 
 
-def insert(pseudo, message, number):
-    rdb.db(app.config['DB_NAME']).table(app.config['TABLE_NAME']).insert({"pseudo": pseudo, "message": message, "number": number}).run(g.rdb_conn)
+def insert(pseudo, message, channel, number):
+    rdb.db(app.config['DB_NAME']).table("chat").insert({"pseudo": pseudo,
+                                                        "message": message,
+                                                        "channel": channel,
+                                                        "number": number}).run(g.rdb_conn)
 
 
 # ----------------Thread-----------------
@@ -66,7 +73,7 @@ def send_changes():
     conn = rdb.connect(host=app.config['RDB_HOST'],
                        port=app.config['RDB_PORT'],
                        db=app.config['DB_NAME'])
-    feed = rdb.db(app.config['DB_NAME']).table(app.config['TABLE_NAME']).changes().run(conn)
+    feed = rdb.db(app.config['DB_NAME']).table("chat").changes().run(conn)
     for change in feed:
         socketio.emit('new_change', change['new_val'])
 
@@ -117,18 +124,37 @@ def register():
 
 @app.route('/chat/', methods=['GET', 'POST'])
 def chat():
-    old_message = select()
-    connected = rdb.db(app.config['DB_NAME']).table('connected').run(g.rdb_conn)
-    return render_template('corps_chat.html', titre="Chat", old_message=old_message, connected=connected)
+    old_messages = messages_select()
+    all_channels = channels_select()
+    connected_users = rdb.db(app.config['DB_NAME']).table('connected').run(g.rdb_conn)
+    return render_template('corps_chat.html',
+                           titre="Chat",
+                           old_messages=old_messages,
+                           connected=connected_users,
+                           all_channels=all_channels,
+                           actual_channel="General")
 
 
 @app.route('/send_to_db/', methods=['POST'])
 def send():
     data = json.loads(request.data)
     if data.get('message'):
-        insert(session['user_name'], data.get('message'), len(list(select())))
+        insert(session['user_name'],
+               data.get('message'),
+               data.get('channel'),
+               len(list(messages_select())))
         return make_response('success!', 201)
     return make_response('invalid chat', 401)
+
+
+@app.route('/channel_change/', methods=['POST'])
+def channel_change():
+    old_messages = list(messages_select())
+    messages_to_send = []
+    for message in old_messages:
+        messages_to_send.append(message)
+    socketio.emit('channel_change', messages_to_send)
+    return make_response('success!', 201)
 
 
 @app.route('/new_user_list/', methods=['POST'])
@@ -154,3 +180,5 @@ if __name__ == '__main__':
         thread = Thread(target=send_changes)
         thread.start()
     socketio.run(app)
+
+# source venv/bin/activate
