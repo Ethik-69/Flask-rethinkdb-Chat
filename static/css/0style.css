@@ -1,0 +1,90 @@
+@charset "UTF-8";
+
+body{
+    background: #9BC4BD;
+}
+
+#index, #signup {
+    width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+li {
+    list-style: none;
+}
+
+#general_chat {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#div_chat_list {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 15%;
+    bottom: 5%;
+}
+
+#div_connected_list {
+    position: absolute;
+    top: 0;
+    left: 85%;
+    right: 0;
+    bottom: 0;
+}
+
+#chat_list {
+    width: 95%;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+#div-chat_send {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right 0;
+}
+
+.message, .pseudo {
+    display: inline-block;
+}
+
+#chat_send > input#message {
+    background-color: #eeeeee;
+    -webkit-border-radius: 3px;
+     	-moz-border-radius: 3px;
+        border-radius: 3px;
+  	border: 1px solid black;
+  	font-size: 1em;
+    width: 75%;
+    display: inline-block;
+}
+
+#chat > label {
+    display: inline-block;
+}
+
+#chat > input#send {
+    display: block;
+}
+
+form input#pseudo,
+form input#mail,
+form input#password,
+form input#conf_password {
+    background-color: #eeeeee;
+    -webkit-border-radius: 3px;
+     	-moz-border-radius: 3px;
+        border-radius: 3px;
+  	border: 1px solid black;
+  	font-size: 1em;
+  	display: block;
+}

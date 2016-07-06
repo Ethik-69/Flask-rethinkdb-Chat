@@ -8,7 +8,6 @@ import rethinkdb as rdb
 from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 from threading import Thread
 import json
-import multiprocessing
 
 
 app = Flask(__name__, static_url_path='')
@@ -70,6 +69,7 @@ def insert(pseudo, message, channel, number):
 
 
 def send_changes():
+    """ Fonction "temp-réel" qui sera lancée dans un thread"""
     conn = rdb.connect(host=app.config['RDB_HOST'],
                        port=app.config['RDB_PORT'],
                        db=app.config['DB_NAME'])
@@ -83,6 +83,7 @@ def send_changes():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """ Affiche l'index et gère le formulaire de connection """
     form = ConnForm(request.form)
     if request.method == "POST":
         if request.form['submit'] == 'sign up':
@@ -104,6 +105,7 @@ def index():
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
+    """ Affiche la page d'inscription et gère le formulaire """
     form = SignUpForm(request.form)
     if request.method == "POST" and form.validate():
         pseudo = form.pseudo.data
@@ -124,6 +126,7 @@ def register():
 
 @app.route('/chat/', methods=['GET', 'POST'])
 def chat():
+    """ Affiche le minou """
     old_messages = messages_select()
     all_channels = channels_select()
     connected_users = rdb.db(app.config['DB_NAME']).table('connected').run(g.rdb_conn)
@@ -137,6 +140,7 @@ def chat():
 
 @app.route('/send_to_db/', methods=['POST'])
 def send():
+    """ Envoi les messages dans la BD """
     data = json.loads(request.data)
     if data.get('message'):
         insert(session['user_name'],
@@ -149,6 +153,7 @@ def send():
 
 @app.route('/channel_change/', methods=['POST'])
 def channel_change():
+    """ Re-demande les messages à la BD en cas de changement de channel et les envoi au js """
     old_messages = list(messages_select())
     messages_to_send = []
     for message in old_messages:
@@ -159,6 +164,7 @@ def channel_change():
 
 @app.route('/new_user_list/', methods=['POST'])
 def new_user_list():
+    """ Re-demande la liste des utilisateurs connectés à la BD et les envoi au js """
     result = list(rdb.db(app.config['DB_NAME']).table('connected').run(g.rdb_conn))
     all_user = []
     for user in result:
@@ -169,6 +175,7 @@ def new_user_list():
 
 @app.route('/disconnect/', methods=['POST'])
 def disconnect():
+    """ Supprime l'utilisateur en cour de la BD et prévient les autres clients """
     rdb.db(app.config['DB_NAME']).table('connected').filter({'pseudo': session['user_name']}).delete().run(g.rdb_conn)
     socketio.emit('user_disconnect', [])
     return make_response('success!', 201)

@@ -55,16 +55,17 @@ var chatList = document.getElementById('chat_list');
 var connectedList = document.getElementById('connected_list');
 var channelTitle = document.getElementById('channel_title');
 
+// Connection au socket.
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 
 // ----------------- Socket -----------------
-
+// Gestion des événements du socket.
 
 socket.on('new_change', function(data) {
     console.log(data.channel)
     console.log(actual_channel)
-    if(data.channel == actualChannel) {
+    if(data.channel == actualChannel.value) {
         chatList.innerHTML = chatList.innerHTML + '<li class="li_message"><a class="pseudo" href="#">' + data.pseudo + ' : </a><div class="message">' + data.message + '</div></li>';
     };
 });
@@ -100,8 +101,9 @@ socket.on('connected_list', function(data) {
 
 
 // ----------------- Event -----------------
+// Gestion des événements.
 
-
+// Lors de l'envoi d'un message.
 chatForm.addEventListener('submit', function(e) {
   e.preventDefault();
   var request = axios.post('/send_to_db/', {
@@ -114,7 +116,7 @@ chatForm.addEventListener('submit', function(e) {
   messageInput.value = "";
 });
 
-
+// Lors du clique sur les liens des channels.
 window.onload = function () {
     var ChannelLinks = document.getElementsByClassName('a_channel');
 
@@ -128,7 +130,7 @@ window.onload = function () {
     };
 };
 
-
+// Avant la fermeture de la page.
 window.onbeforeunload = disconnect;
   function disconnect()
   {
