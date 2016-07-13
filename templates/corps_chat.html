@@ -1,0 +1,141 @@
+{% extends 'skeleton.index.html' %}
+
+{% block corps %}
+
+
+<div id="general_container">
+
+    <div id="div_chat_list">
+        <h2 id="channel_title"># {{ actual_channel }}</h2>
+
+        <ul id="chat_list">
+            {% for message in old_messages %}
+                {% if message.channel == actual_channel %}
+                    <li class="li_message"><a class="pseudo" href="#">{{ message.pseudo }} : </a><div class="message">{{ message.message }}</div></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <div id="div-chat_send">
+            <form id="chat_send">
+                <input type="hidden" id="actual_channel" value="{{ actual_channel }}"/>
+                <input type="text" placeholder="Votre message..." name="message" id="input_message" />
+
+                <input type="submit" id="send" value="Send" />
+            </form>
+        </div>
+    </div>
+
+    <div id="div_connected_list">
+        {% for client in connected %}
+            <a href="#" class="a_connected_user">
+                <div class="connected_user">{{  client.pseudo  }}</div>
+            </a>
+        {% endfor %}
+    </div>
+
+    <div id="div_channel_list">
+        {% for channel in all_channels %}
+            <a href="{{ channel.name }}" class="a_channel">
+                <div class="channel"># {{ channel.name }}</div>
+            </a>
+        {% endfor %}
+    </div>
+
+</div>
+
+
+<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.8.1/axios.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+var chatForm = document.getElementById('chat_send');
+var messageInput = document.getElementById('input_message');
+var actualChannel = document.getElementById('actual_channel');
+var chatList = document.getElementById('chat_list');
+var connectedList = document.getElementById('connected_list');
+var channelTitle = document.getElementById('channel_title');
+
+// Connection au socket.
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+
+// ----------------- Socket -----------------
+// Gestion des événements du socket.
+
+socket.on('new_change', function(data) {
+    console.log(data.channel)
+    console.log(actual_channel)
+    if(data.channel == actualChannel.value) {
+        chatList.innerHTML = chatList.innerHTML + '<li class="li_message"><a class="pseudo" href="#">' + data.pseudo + ' : </a><div class="message">' + data.message + '</div></li>';
+    };
+});
+
+
+socket.on('channel_change', function(data) {
+    console.log(data)
+    chatList.innerHTML = '<li></li>';
+    data.forEach(function(message) {
+        if(message.channel == actualChannel.value) {
+          chatList.innerHTML = chatList.innerHTML + '<li class="li_message"><a class="pseudo" href="#">' + message.pseudo + ' : </a><div class="message">' + message.message + '</div></li>';
+        }
+    });
+});
+
+
+socket.on('new_user', function(data) {
+  var request = axios.post('/new_user_list/', {});
+});
+
+
+socket.on('user_disconnect', function(data) {
+  var request = axios.post('/new_user_list/', {});
+});
+
+
+socket.on('connected_list', function(data) {
+    connectedList.innerHTML = '<li></li>'
+    data.forEach(function(client) {
+        connectedList.innerHTML = connectedList.innerHTML + '<li>' + client + '</li>';
+     });
+});
+
+
+// ----------------- Event -----------------
+// Gestion des événements.
+
+// Lors de l'envoi d'un message.
+chatForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  var request = axios.post('/send_to_db/', {
+    message: messageInput.value,
+    channel: actualChannel.value
+  });
+  request.then(function(data) {
+    console.log(data);
+  })
+  messageInput.value = "";
+});
+
+// Lors du clique sur les liens des channels.
+window.onload = function () {
+    var ChannelLinks = document.getElementsByClassName('a_channel');
+
+    for (var i = 0; i < ChannelLinks.length; i++) {
+        ChannelLinks[i].onclick = function(e) {
+            e.preventDefault();
+            actualChannel.value = this.getAttribute('href');
+            channelTitle.innerHTML = '# ' + this.getAttribute('href');
+            var request = axios.post('/channel_change/', {});
+        };
+    };
+};
+
+// Avant la fermeture de la page.
+window.onbeforeunload = disconnect;
+  function disconnect()
+  {
+  var request = axios.post('/disconnect/', {});
+  }
+</script>
+
+{% endblock %}
