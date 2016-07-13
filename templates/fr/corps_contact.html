@@ -1,0 +1,34 @@
+{% extends 'fr/skeleton.index.html' %}
+
+{% block corps%}
+
+<h1>Contact</h1>
+
+<p>Si vous avez un bug a soumettre, une envie d'aider, une suggestion ou autre, c'est par ici.</p>
+<form id="contact" action="/fr/contact/" method="POST">
+    {{ form.name.label }}
+    {{ form.name }}
+<br />
+    {{ form.email.label }}
+    {{ form.email }}
+<br />
+    {{ form.subject.label }}
+    {{ form.subject }}
+<br />
+    {{ form.message.label }}
+    {{ form.message }}
+<br />
+    {{ form.submit }}
+  </form>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for m in messages %}
+            <li>{{ m.decode('utf-8') }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'en/skeleton.index.html' %}
+
+{% block corps%}
+
+<h1>Rating</h1>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Score</td>
+            <td>Eaten</td>
+            <td>Time</td>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for document in stats %}
+        <tr class="stats">
+            <td class="stat_name">{{ document['name'] }}</td>
+            <td class="stat_point">{{ document['point'] }}</td>
+            <td class="stat_victims">{{ document['victims'] }}</td>
+            <td class="stat_time">{{ document['time'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,168 +1,280 @@
-@charset "UTF-8";
-
-body{
-    height: 100%;
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
+@font-face {
+  font-family: 'silkscreen_normal_macroman';
+  src: url('../font/silkscreen_normal_macroman/slkscr-webfont.eot?');
+  src: url('../font/silkscreen_normal_macroman/slkscr-webfont.ttf') format('truetype'),
+  url('../font/silkscreen_normal_macroman/slkscr-webfont.woff') format('woff'),
+  url('../font/silkscreen_normal_macroman/slkscr-webfont.eot?#iefix') format('embedded-opentype'),
+  url('../font/silkscreen_normal_macroman/slkscr-webfont.svg#slkscr-webfont') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: '1942report_regular';
+  src: url('../font/1942report_regular_macroman/1942-webfont.eot?');
+  src: url('../font/1942report_regular_macroman/1942-webfont.ttf') format('truetype'),
+  url('../font/1942report_regular_macroman/1942-webfont.woff') format('woff'),
+  url('../font/1942report_regular_macroman/1942-webfont.eot?#iefix') format('embedded-opentype'),
+  url('../font/1942report_regular_macroman/1942-webfont.svg#slkscr-webfont') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* css commun à toute les tailles d'écrans */
+html, body {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+html, body, .container, header, .bloc_hight, .accueil, .score, .loading,
+.about, .lang, #lang_fr, #lang_en, .fog, .center, h1, h2, footer,
+.bloc_down, .contact, .facebook {
+  display: flex;
+}
+html, body, .fog, footer, header, .container {
+  width: 100%;
+}
+html, body, .container {
+  height: 100%;
+}
+html, body, .container, .fog, .center {
+  flex-direction: column;
+}
+.container, header {
+  background-repeat: no-repeat;
+}
+.container, .bloc_hight, .bloc_down {
+  justify-content: space-between;
+}
+.accueil, .score, .loading, .about, h1, h2 {
+  justify-content: center;
+}
+.accueil, .score, .loading, .about, .lang {
+  margin-top: 5%;
+}
+.accueil, .score, .loading, .about, #lang_fr, #lang_en, .contact, .loading_down {
+  font-family: "1942report_regular";
+}
+h1, h2 {
+  font-family: "silkscreen_normal_macroman";
+}
+footer, .bloc_down {
+  align-items: center;
+}
+.contact, .loading_down {
+  margin-top: 50%;
+}
+a, .center {
+  text-decoration: none;
+  color: white;
+}
+.container {
+  background-image: url('../img/foule_zombie_fond_3x.jpg');
+  background-position: center;
+}
+header {
+  height: 20%;
+  background-position: center top;
+}
+.bloc_hight {
+  height: 30px;
+  align-items: center;
+  margin-bottom: 100px;
+}
+.fog, .center {
+  height: 80%;
+}
+.fog {
+  background: -moz-element(#myCanvas);
+  background-size: cover;
+}
+.center {
+  text-align: center;
+  font-family: "silkscreen_normal_macroman";
+}
+footer {
+  height: 20%;
+}
+.bloc_down {
+  width: 90%;
+  margin-left: 5%;
 }
 
-a {
-    color: black;
-    text-decoration: none;
+
+/* Formulaire */
+
+form {
+    width: 30%;
+	left: 40%;
+	position: relative;
+  	font-size: 1em;
+	text-align: left;
+	font-weight: bold;
+  	display: inline-block;
 }
 
-li {
-    list-style: none;
+form label {
+    width: 100px;
+  	font-size: 1em;
+	text-align: left;
+  	display: block;
 }
 
-/* Formulaire + index/signup */
-
-#index, #signup {
-    width: 280px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-form input#pseudo,
-form input#mail,
-form input#password,
-form input#conf_password {
-    background-color: #eeeeee;
-    -webkit-border-radius: 3px;
+form input#name,
+form input#email,
+form input#subject {
+  	width: 300px;
+  	background-color: #cccccc;
+  	-webkit-border-radius: 3px;
      	-moz-border-radius: 3px;
         border-radius: 3px;
   	border: 1px solid black;
   	font-size: 1em;
+	display: block;
+}
+
+form textarea#message {
+  	width: 400px;
+ 	height: 100px;
+  	background-color: #cccccc;
+  	-webkit-border-radius: 3px;
+   	-moz-border-radius: 3px;
+        border-radius: 3px;
+ 	border: 1px solid black;
+	margin-bottom: 10px;
+	padding: 5px;
+	font-size: 1.1em;
+	display: block;
+}
+
+form input#submit {
   	display: block;
+  	-webkit-border-radius: 3px;
+     	-moz-border-radius: 3px;
+        border-radius: 3px;
+  	border: 1px solid #d8d8d8;
+  	padding: 10px;
+  	font-weight: bold;
+  	text-align: center;
+  	color: #000000;
+  	background-color: #f4f4f4;
 }
 
-/* --------- Chat --------- */
-
-/* ----- Séparation x3 ----- */
-
-#general_container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: 0px;
-    padding: 0px;
-    display: flex;
-    flex-flow: row;
+form input#submit:hover{
+  	cursor: pointer;
+  	border: 1px solid #c1c1c1;
+  	background-color: #BABABA;
 }
 
-#div_chat_list {
-    background: #9BC4BD;
-    height: 97.7%;
-    flex: 76%;
-    order: 2;
-    padding: 10px;
+@media screen and (min-width:534px) { /*css commun aux 2 media queries au dessus au dessus de 534px de large */
+    .container {
+      background-size: 100%;
+    }
+    header {
+      background-image: url('../img/blood_hight_2.png');
+    }
+    .bloc_hight {
+      width: 95%;
+    }
+    .accueil, .score, .loading, .about {
+      width: 20%;
+    }
+    .lang {
+      width: 100px;
+    }
+    #lang_fr, #lang_en {
+      width: 50%;
+    }
+    .center {
+      width: 80%;
+      margin-left: 10%;
+    }
+    .loading_down {
+      display: none;
+    }
+    .facebook {
+      width:50px;
+      height: 51px;
+      background-image: url('../img/fb2.png');
+    }
 }
-
-#div_connected_list {
-    background: #919BC4;
-    flex: 12%;
-    order: 3;
+@media screen and (min-width:1090px) {/*css media queries au dessus de 1090px de large */
+    .bloc_hight {
+      width: 95%;
+    }
+		.accueil, .score, .loading, .about, .lang, .contact {
+			font-size: 1.5em;
+		}
+		.lang {
+			justify-content: space-between;
+		}
+		h1 {
+			font-size: 5em;
+		}
+		h2 {
+			font-size: 1em;
+		}
 }
-
-#div_channel_list {
-    background: #5F94AD;
-    flex: 12%;
-    order: 1;
+@media screen and (min-width: 534px) and (max-width: 1090px) {/* css media queries entre 534px et 1090px de large*/
+    .container {
+      background-size: 300%;
+    }
+    .accueil, .score, .about, .lang, .contact, .loading_down {
+      font-size: 1.2em;
+    }
+    h1 {
+      font-size: 3em;
+    }
+    h2 {
+      font-size: 1em;
+    }
+    .loading {
+      display: none;
+    }
+    .loading_down {
+      display: flex;
+      font-family: "1942report_regular";
+    }
 }
-
-/* Chat list */
-
-#channel_title {
-    padding-left: 10px;
-    margin: 0px;
-    background-color: #80AD8E;
-}
-
-#chat_list {
-    height: 90%;
-    margin: 0px;
-    padding: 15px 0px 0px 0px;
-    overflow: auto;
-}
-
-.li_message {
-}
-
-.message {
-    padding-left: 30px;
-}
-
-.pseudo {
-    font-size: 1.05em;
-    font-weight: bold;
-}
-
-.pseudo:hover {
-    text-decoration: underline;
-}
-
-#input_message {
-    width: 97%;
-    padding: 10px;
-    border: solid 2px #b3b3b3;
-    border-radius: 4px;
-}
-
-#send {
-    display: none;
-}
-
-/* Connected users list */
-
-#div_connected_list {
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
-    align-content: flex-start;
-}
-
-.a_connected_user {
-    width: 100%;
-    height: 3%;
-    flex-basis: auto;
-    text-align: center;
-}
-
-.connected_user {
-    line-height: 1.7em;
-    width: 100%;
-    height: 100%;
-}
-
-.connected_user:hover {
-    background-color: #7D85A8;
-}
-
-/* Channels */
-
-#div_channel_list {
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
-    align-content: flex-start;
-}
-
-.a_channel {
-    width: 100%;
-    height: 5%;
-    flex-basis: auto;
-    text-align: center;
-}
-
-.channel {
-    line-height: 2.7em;
-    width: 100%;
-    height: 100%;
-}
-
-.channel:hover {
-    background-color: #4D788C;
+@media screen and (max-width:534px) {/*css media queries en dessous de 534px de large*/
+    .container {
+      background-size: 400%;
+    }
+    header {
+      background-image: url('../img/blood_hight_2_petit.png');
+    }
+    .bloc_hight {
+      width: 100%;
+    }
+    .accueil, .score, .about, .lang, .contact, .loading_down  {
+      font-size: 1em;
+    }
+    .accueil, .score, .about, .lang  {
+      width: 25%;
+    }
+    .loading {
+      display: none;
+    }
+    #lang_fr {
+      width: 20%;
+    }
+    #lang_en {
+      width: 80%;
+      justify-content: center;
+    }
+    .center {
+      width: 80%;
+      margin-left: 10%;
+    }
+    h1 {
+      font-size: 2em;
+    }
+    h2 {
+      font-size: 0.9em;
+    }
+    .loading_down {
+  		display: flex;
+  	}
+    .facebook {
+      width: 30px;
+      height: 31px;
+      background-image: url('../img/fb1.png');
+    }
 }
